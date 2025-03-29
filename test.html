@@ -38,7 +38,8 @@
       border-radius: 8px;
       position: relative;
       overflow: hidden;
-      min-height: 350px;
+      height: auto; /* Changed from min-height: 350px */
+      transition: min-height 0.3s ease-in-out;
     }
     h1, h2 {
       text-align: center;
@@ -135,6 +136,98 @@
       margin-top: 2rem;
       font-size: 0.9rem;
     }
+    .form-step#step7 input[type="checkbox"] {
+  /* Remove default appearance */
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: #fff;
+  border: 2px solid #EDC8FF;
+  border-radius: 4px;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  position: relative;
+  margin-right: 10px;
+  vertical-align: middle;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+.form-step#step7 input[type="checkbox"]:checked {
+  background-color: #EDC8FF;
+  border-color: #EDC8FF;
+}
+
+.form-step#step7 input[type="checkbox"]:checked::after {
+  content: "\2713";
+  color: white;
+  position: absolute;
+  top: -2px;
+  left: 4px;
+  font-size: 18px;
+}
+
+/* Improve label styling for checkboxes */
+.form-step#step7 label {
+  font-weight: normal;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Container for checkboxes for better layout */
+.checkbox-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.checkbox-group .checkbox-item {
+  display: flex;
+  align-items: center;
+}
+/* Chat bubble styling */
+.talk-bubble {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 280px;
+  height: auto;
+  background-color: #EDC8FF;
+  padding: 15px;
+  border-radius: 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s, transform 0.5s;
+  z-index: 1000;
+}
+
+.talk-bubble.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.talk-bubble.tri-right.right-in:after {
+  content: ' ';
+  position: absolute;
+  width: 0;
+  height: 0;
+  right: 20px;
+  bottom: -20px;
+  border: 10px solid;
+  border-color: #EDC8FF transparent transparent #EDC8FF;
+}
+
+.talktext {
+  color: #333;
+  font-size: 14px;
+  line-height: 1.4;
+  font-family: Arial, sans-serif;
+}
+
   </style>
 </head>
 <body>
@@ -226,34 +319,96 @@
       </select>
       <div class="button-group">
         <button type="button" class="prev" onclick="prevStep(6)">Previous</button>
-        <button type="button" onclick="calculateMacros()">Calculate Macros</button>
+        <button type="button" onclick="nextStep(6)">Next</button>
       </div>
     </div>
 
-    <!-- Step 7: Preference -->
-    <div class="form-group">
-        <p>What culture's food do you prefer? (Select all that apply)</p>
-        <input type="checkbox" id="select-all" onclick="toggle(this)"> 
-        <label for="select-all"><strong>Select All</strong></label><br>
-        <input type="checkbox" name="territory" value="american"> American<br>
-        <input type="checkbox" name="territory" value="indian"> Indian<br>
-        <input type="checkbox" name="territory" value="mediterranean"> Mediterranean<br>
-        <input type="checkbox" name="territory" value="italian"> Italian<br>
-        <input type="checkbox" name="territory" value="chinese"> chinese<br>
+<!-- Step 7: Preference -->
+<div class="form-step" id="step7">
+    <h2>What culture's food do you prefer? (Select all that apply)</h2>
+    <div class="checkbox-group">
+      <div class="checkbox-item">
+        <input type="checkbox" id="select-all" onclick="toggle(this)">
+        <label for="select-all"><strong>Select All</strong></label>
       </div>
-      
-    
+      <div class="checkbox-item">
+        <input type="checkbox" id="american" name="territory" value="american">
+        <label for="american">American</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="indian" name="territory" value="indian">
+        <label for="indian">Indian</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="mediterranean" name="territory" value="mediterranean">
+        <label for="mediterranean">Mediterranean</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="italian" name="territory" value="italian">
+        <label for="italian">Italian</label>
+      </div>
+      <div class="checkbox-item">
+        <input type="checkbox" id="chinese" name="territory" value="chinese">
+        <label for="chinese">Chinese</label>
+      </div>
+    </div>
+    <div class="button-group">
+      <button type="button" class="prev" onclick="prevStep(7)">Previous</button>
+      <button type="button" onclick="nextStep(7)">Next</button>
+    </div>
+  </div>
+  
+    <!-- Step 8: Appetite Abnormalities -->
+<div class="form-step" id="step8">
+    <h2>How often do appetite abnormalities occur?</h2>
+    <label for="appetiteAbnormalities">Select one:</label>
+    <select id="appetiteAbnormalities">
+      <option value="na">N/A</option>
+      <option value="once_week">Once per week</option>
+      <option value="few_times">A few times per week</option>
+      <option value="most_week">Most of the week</option>
+    </select>
+    <div class="button-group">
+      <button type="button" class="prev" onclick="prevStep(8)">Previous</button>
+      <button type="button" onclick="nextStep(8)">Next</button>
+    </div>
+  </div>
+  
+  <!-- Step 9: Disorder type -->
+  <div class="form-step" id="step9">
+    <h2>If the last question applied to you, what kind of appetite abnormalities do you face?</h2>
+    <label for="abnormality">Differential:</label>
+    <select id="abnormality">
+      <option value="none">N/A</option>
+      <option value="over">Overeating</option>
+      <option value="under">Undereating</option>
+    </select>
+    <div class="button-group">
+      <button type="button" class="prev" onclick="prevStep(9)">Previous</button>
+      <button type="button" onclick="nextStep(9)">Next</button>
+    </div>
+  </div>
+  <!-- Step 10: Daily Calorie Estimate -->
+<div class="form-step" id="step10">
+    <h2>What's your best estimate of your daily calorie intake?</h2>
+    <label for="calorieEstimate">Daily Calories (kcal):</label>
+    <input type="number" id="calorieEstimate" placeholder="Enter your estimated daily calories" required>
+    <div class="button-group">
+      <button type="button" class="prev" onclick="prevStep(10)">Previous</button>
+      <button type="button" onclick="calculateMacros()">Complete</button>
+    </div>
+  </div>
     <!-- Results Step -->
     <div class="form-step" id="results-step">
       <div id="results">
-        <h2>Your Macros</h2>
+        <h2>Your Nutritional Needs</h2>
         <p id="user-info"></p>
         <p id="calories"></p>
         <p id="protein"></p>
         <p id="carbs"></p>
         <p id="fats"></p>
         <div class="button-group">
-          <button type="button" class="prev" onclick="prevStep(7)">Back</button>
+          <button type="button" class="prev" onclick="prevStep('results')">Back</button>
           <button type="button" onclick="resetForm()">Start Over</button>
         </div>
       </div>
@@ -262,12 +417,57 @@
 </div>
 
 <footer>
-  &copy; 2025 Nutrition Nana
-</footer>
+    &copy; 2025 Nutrition Nana
+    <div style="font-size: 0.8rem; margin-top: 10px; line-height: 1.4;">
+      <a href="tel:866-256-3563">Eating Disorder Hotline - 866-256-3563</a><br>
+      <a href="https://www.nationaleatingdisorders.org/get-help/" target="_blank">Learn more about Eating Disorders</a><br>
+      <a href="https://www.eatingdisorderfoundation.org/learn-more/about-eating-disorders/coping/" target="_blank">General Coping Strategies</a><br>
+      <a href="https://www.mayoclinic.org/diseases-conditions/binge-eating-disorder/diagnosis-treatment/drc-20353633" target="_blank">Learn more about Binge Eating</a><br>
+      <a href="https://www.mayoclinic.org/diseases-conditions/anorexia-nervosa/symptoms-causes/syc-20353" target="_blank">Learn more about Anorexia</a>
+    </div>
+  </footer>
+  
+  
+<script type="module">
+import { Client } from "@notionhq/client";
+import dotenv from "dotenv";
+
+function connectDB()
+{
+    dotenv.config();
+
+    const notion = new Client({ auth: process.env.NOTION_API_KEY });
+
+    try {
+      const response = notion.databases.query({
+        database_id: process.env.NOTION_DATABASE_ID,
+      });
+
+      console.log(response);
+    } catch (error) {
+      console.error(error.body);
+    }
+}
+connectDB();
+
+</script>
 
 <script>
+
   let currentStep = 1;
-  const totalSteps = 6;
+  const totalSteps = 9; 
+  
+  function adjustContainerHeight() {
+    const container = document.querySelector('.container');
+    const activeStep = document.querySelector('.form-step.active');
+    
+    if (activeStep) {
+      // Get the height of the active step
+      const stepHeight = activeStep.offsetHeight;
+      // Set the container height to match (plus some padding)
+      container.style.minHeight = (stepHeight + 40) + 'px';
+    }
+  }
   
   function updateProgressBar() {
     const progressPercent = ((currentStep - 1) / totalSteps) * 100;
@@ -286,6 +486,9 @@
     
     // Update progress bar
     updateProgressBar();
+    
+    // Adjust container height
+    adjustContainerHeight();
   }
   
   function nextStep(step) {
@@ -313,18 +516,34 @@
     document.getElementById('step' + currentStep).classList.add('active');
     
     updateProgressBar();
+    adjustContainerHeight();
   }
   
   function prevStep(step) {
-    // Mark current step as next (for animation)
-    document.getElementById('step' + step).classList.remove('active');
-    
-    // Show previous step
-    currentStep = step - 1;
-    document.getElementById('step' + currentStep).classList.remove('previous');
-    document.getElementById('step' + currentStep).classList.add('active');
-    
-    updateProgressBar();
+  // Mark current step as next (for animation)
+  if (step === 'results') {
+  document.getElementById('results-step').classList.remove('active');
+  currentStep = 10;
+} else {
+  document.getElementById('step' + step).classList.remove('active');
+  currentStep = step - 1;
+}
+
+  
+  // Show previous step
+  document.getElementById('step' + currentStep).classList.remove('previous');
+  document.getElementById('step' + currentStep).classList.add('active');
+  
+  updateProgressBar();
+  adjustContainerHeight();
+}
+
+  
+  function toggle(source) {
+    const checkboxes = document.getElementsByName('territory');
+    for (let i = 0; i < checkboxes.length; i++) {
+      checkboxes[i].checked = source.checked;
+    }
   }
   
   function calculateMacros() {
@@ -343,10 +562,15 @@
     }
 
     // Calculate BMR using Mifflin-St Jeor Equation
-    let bmr = gender === 'male'
-              ? 66+(6.23*weight)+(12.7*height)-(6.8*age)
-
-              : (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+    let bmr;
+    if (gender === 'male') {
+      bmr = 66 + (6.23 * weight) + (12.7 * height) - (6.8 * age);
+    } else {
+      // Convert to metric for female calculation
+      const weightKg = weight * 0.453592;
+      const heightCm = height * 2.54;
+      bmr = (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+    }
 
     // Adjust BMR based on activity level
     const activityMultiplier = {
@@ -355,6 +579,8 @@
       moderately_active: 1.55,
       very_active: 1.725
     };
+
+
 
     const tdee = bmr * activityMultiplier[activityLevel]; // Total Daily Energy Expenditure
 
@@ -379,6 +605,9 @@
     
     // Update progress bar to 100%
     document.getElementById('progress').style.width = '100%';
+    
+    // Adjust container height for results
+    adjustContainerHeight();
   }
   
   function resetForm() {
@@ -389,6 +618,70 @@
   
   // Initialize
   updateProgressBar();
+  adjustContainerHeight();
+  
+  // Adjust container height when window is resized
+  window.addEventListener('resize', adjustContainerHeight);
+  // Array of motivational phrases
+const motivationalPhrases = [
+  "Every small step you take is a victory, and I'm here to cheer you on every single time!",
+  "It's okay to have tough days. Remember, you're never alone!",
+  "I believe in you!",
+  "Every small step forward is something to be proud of!",
+  "Your health and happiness matter, and you deserve to feel good in your own skin!",
+  "You are full of potential"
+];
+
+// Function to display a random phrase in a chat bubble
+function showMotivationalBubble() {
+  // Select a random phrase from the array
+  const randomIndex = Math.floor(Math.random() * motivationalPhrases.length);
+  const phrase = motivationalPhrases[randomIndex];
+  
+  // Create or update the chat bubble
+  const chatBubble = document.getElementById('motivational-bubble') || createChatBubble();
+  chatBubble.textContent = phrase;
+  
+  // Show the bubble with animation
+  chatBubble.classList.add('show');
+  
+  // Hide the bubble after 5 seconds
+  setTimeout(() => {
+    chatBubble.classList.remove('show');
+  }, 5000);
+}
+
+// Function to create the chat bubble element if it doesn't exist
+function createChatBubble() {
+  const bubble = document.createElement('div');
+  bubble.id = 'motivational-bubble';
+  bubble.className = 'talk-bubble tri-right round right-in';
+  
+  const textContainer = document.createElement('div');
+  textContainer.className = 'talktext';
+  bubble.appendChild(textContainer);
+  
+  document.body.appendChild(bubble);
+  return textContainer;
+}
+
+// Set random interval between 20-30 seconds
+function setRandomInterval() {
+  const minTime = 20000; // 20 seconds
+  const maxTime = 30000; // 30 seconds
+  const randomTime = Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
+  
+  showMotivationalBubble(); // Show first message immediately
+  
+  setTimeout(() => {
+    showMotivationalBubble();
+    setRandomInterval(); // Set the next interval recursively
+  }, randomTime);
+}
+
+// Start the random interval when the page loads
+window.onload = setRandomInterval;
+
 </script>
 
 </body>
