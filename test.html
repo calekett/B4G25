@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macro Calculator & Meal Planner</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f9;
+      color: #333;
+    }
+    header {
+      background-color: #EDC8FF;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo {
+      height: 50px;
+      margin-right: 15px;
+    }
+    .header-content {
+      display: flex;
+      align-items: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
+      background-color: white;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      min-height: 300px;
+    }
+    h1, h2 {
+      text-align: center;
+      color: #333;
+    }
+    .form-step {
+      position: absolute;
+      width: 100%;
+      opacity: 0;
+      transform: translateX(100%);
+      transition: all 0.5s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      left: 0;
+      right: 0;
+      padding: 0 1rem;
+      box-sizing: border-box;
+    }
+    .form-step.active {
+      opacity: 1;
+      transform: translateX(0);
+      z-index: 1;
+    }
+    .form-step.previous {
+      transform: translateX(-100%);
+    }
+    label {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      display: block;
+      text-align: center;
+    }
+    input, select {
+      padding: 1rem;
+      font-size: 1.1rem;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      width: 100%;
+      max-width: 300px;
+      margin-bottom: 1.5rem;
+    }
+    .button-group {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 300px;
+      margin-top: 1rem;
+    }
+    button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      border: none;
+      background-color: #EDC8FF;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    button:hover {
+      background-color: #d9a6ff;
+    }
+    button.prev {
+      background-color: #f1f1f1;
+      color: #333;
+    }
+    button.prev:hover {
+      background-color: #e0e0e0;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background-color: #f1f1f1;
+      margin-bottom: 2rem;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background-color: #EDC8FF;
+      transition: width 0.5s ease-in-out;
+    }
+    #results {
+      text-align: center;
+    }
+    #results p {
+      color: #333;
+      font-size: 1.1rem;
+      margin: 0.5rem 0;
+    }
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  
+<header>
+  <div class="header-content">
+    <img src="logo.png" alt="Nutrition Nana Logo" class="logo">
+    <h1>Nutrition Nana</h1>
+  </div>
+</header>
+
+<div class="container">
+  <div class="progress-bar">
+    <div class="progress" id="progress"></div>
+  </div>
+  
+  <form id="macroForm">
+    <!-- Step 1: Weight -->
+    <div class="form-step active" id="step1">
+      <h2>What is your weight?</h2>
+      <label for="weight">Weight (lbs):</label>
+      <input type="number" id="weight" placeholder="Enter your weight in pounds" required>
+      <div class="button-group">
+        <div></div> <!-- Empty div for spacing -->
+        <button type="button" onclick="nextStep(1)">Next</button>
+      </div>
+    </div>
+    
+    <!-- Step 2: Height -->
+    <div class="form-step" id="step2">
+      <h2>What is your height?</h2>
+      <label for="height">Height (inches):</label>
+      <input type="number" id="height" placeholder="Enter your height in inches" required>
+      <div class="button-group">
+        <button type="button" class="prev" onclick="prevStep(2)">Previous</button>
+        <button type="button" onclick="nextStep(2)">Next</button>
+      </div>
+    </div>
+    
+    <!-- Step 3: Age -->
+    <div class="form-step" id="step3">
+      <h2>What is your age?</h2>
+      <label for="age">Age:</label>
+      <input type="number" id="age" placeholder="Enter your age" required>
+      <div class="button-group">
+        <button type="button" class="prev" onclick="prevStep(3)">Previous</button>
+        <button type="button" onclick="nextStep(3)">Next</button>
+      </div>
+    </div>
+    
+    <!-- Step 4: Gender -->
+    <div class="form-step" id="step4">
+      <h2>What is your gender?</h2>
+      <label for="gender">Gender:</label>
+      <select id="gender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      <div class="button-group">
+        <button type="button" class="prev" onclick="prevStep(4)">Previous</button>
+        <button type="button" onclick="nextStep(4)">Next</button>
+      </div>
+    </div>
+    
+    <!-- Step 5: Activity Level -->
+    <div class="form-step" id="step5">
+      <h2>What is your activity level?</h2>
+      <label for="activityLevel">Activity Level:</label>
+      <select id="activityLevel">
+        <option value="sedentary">Sedentary (little or no exercise)</option>
+        <option value="lightly_active">Lightly Active (light exercise/sports)</option>
+        <option value="moderately_active">Moderately Active (moderate exercise/sports)</option>
+        <option value="very_active">Very Active (hard exercise/sports)</option>
+      </select>
+      <div class="button-group">
+        <button type="button" class="prev" onclick="prevStep(5)">Previous</button>
+        <button type="button" onclick="calculateMacros()">Calculate Macros</button>
+      </div>
+    </div>
+    
+    <!-- Results Step -->
+    <div class="form-step" id="results-step">
+      <div id="results">
+        <h2>Your Macros</h2>
+        <p id="calories"></p>
+        <p id="protein"></p>
+        <p id="carbs"></p>
+        <p id="fats"></p>
+        <div class="button-group">
+          <button type="button" class="prev" onclick="prevStep(6)">Back</button>
+          <button type="button" onclick="resetForm()">Start Over</button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+<footer>
+  &copy; 2025 Macro Calculator & Meal Planner
+</footer>
+
+<script>
+  let currentStep = 1;
+  const totalSteps = 5;
+  
+  function updateProgressBar() {
+    const progressPercent = ((currentStep - 1) / totalSteps) * 100;
+    document.getElementById('progress').style.width = progressPercent + '%';
+  }
+  
+  function showStep(stepNumber) {
+    // Hide all steps
+    document.querySelectorAll('.form-step').forEach(step => {
+      step.classList.remove('active');
+      step.classList.remove('previous');
+    });
+    
+    // Show the current step
+    document.getElementById('step' + stepNumber).classList.add('active');
+    
+    // Update progress bar
+    updateProgressBar();
+  }
+  
+  function nextStep(step) {
+    // Validate current step
+    if (step === 1 && !document.getElementById('weight').value) {
+      alert('Please enter your weight');
+      return;
+    } else if (step === 2 && !document.getElementById('height').value) {
+      alert('Please enter your height');
+      return;
+    } else if (step === 3 && !document.getElementById('age').value) {
+      alert('Please enter your age');
+      return;
+    }
+    
+    // Mark current step as previous
+    document.getElementById('step' + step).classList.add('previous');
+    document.getElementById('step' + step).classList.remove('active');
+    
+    // Show next step
+    currentStep = step + 1;
+    document.getElementById('step' + currentStep).classList.add('active');
+    
+    updateProgressBar();
+  }
+  
+  function prevStep(step) {
+    // Mark current step as next (for animation)
+    document.getElementById('step' + step).classList.remove('active');
+    
+    // Show previous step
+    currentStep = step - 1;
+    document.getElementById('step' + currentStep).classList.remove('previous');
+    document.getElementById('step' + currentStep).classList.add('active');
+    
+    updateProgressBar();
+  }
+  
+  function calculateMacros() {
+    // Get form values
+    const weight = parseFloat(document.getElementById('weight').value);
+    const height = parseFloat(document.getElementById('height').value);
+    const age = parseInt(document.getElementById('age').value);
+    const gender = document.getElementById('gender').value;
+    const activityLevel = document.getElementById('activityLevel').value;
+
+    if (!weight || !height || !age) {
+      alert("Please fill out all fields.");
+      return;
+    }
+
+    // Convert weight to kg and height to cm
+    const weightKg = weight * 0.453592; // Pounds to kilograms
+    const heightCm = height * 2.54; // Inches to centimeters
+
+    // Calculate BMR using Mifflin-St Jeor Equation
+    let bmr = gender === 'male'
+              ? (10 * weightKg) + (6.25 * heightCm) - (5 * age) + 5
+              : (10 * weightKg) + (6.25 * heightCm) - (5 * age) - 161;
+
+    // Adjust BMR based on activity level
+    const activityMultiplier = {
+      sedentary: 1.2,
+      lightly_active: 1.375,
+      moderately_active: 1.55,
+      very_active: 1.725
+    };
+
+    const tdee = bmr * activityMultiplier[activityLevel]; // Total Daily Energy Expenditure
+
+    // Calculate macros (example ratios)
+    const protein = Math.round((tdee * 0.3) / 4); // Protein in grams
+    const carbs = Math.round((tdee * 0.4) / 4);   // Carbs in grams
+    const fats = Math.round((tdee * 0.3) / 9);   // Fats in grams
+
+    // Display results
+    document.getElementById('calories').textContent = `Calories Needed Per Day: ${Math.round(tdee)} kcal`;
+    document.getElementById('protein').textContent = `Protein Needed Per Day: ${protein} g`;
+    document.getElementById('carbs').textContent = `Carbohydrates Needed Per Day: ${carbs} g`;
+    document.getElementById('fats').textContent = `Fats Needed Per Day: ${fats} g`;
+    
+    // Show results step
+    document.querySelectorAll('.form-step').forEach(step => {
+      step.classList.remove('active');
+      step.classList.remove('previous');
+    });
+    document.getElementById('results-step').classList.add('active');
+    
+    // Update progress bar to 100%
+    document.getElementById('progress').style.width = '100%';
+  }
+  
+  function resetForm() {
+    document.getElementById('macroForm').reset();
+    currentStep = 1;
+    showStep(1);
+  }
+  
+  // Initialize
+  updateProgressBar();
+</script>
+
+</body>
+</html>
