@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Macro Calculator & Meal Planner</title>
+  <title>Nutrition Nana</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -152,41 +152,54 @@
   </div>
   
   <form id="macroForm">
-    <!-- Step 1: Weight -->
+    <!-- Step 1: Name and Email -->
     <div class="form-step active" id="step1">
-      <h2>What is your weight?</h2>
-      <label for="weight">Weight (lbs):</label>
-      <input type="number" id="weight" placeholder="Enter your weight in pounds" required>
+      <h2>Welcome! Let's get started</h2>
+      <label for="name">Your Name:</label>
+      <input type="text" id="name" placeholder="Enter your name" required>
+      <label for="email">Your Email:</label>
+      <input type="email" id="email" placeholder="Enter your email" required>
       <div class="button-group">
         <div></div> <!-- Empty div for spacing -->
         <button type="button" onclick="nextStep(1)">Next</button>
       </div>
     </div>
     
-    <!-- Step 2: Height -->
+    <!-- Step 2: Weight -->
     <div class="form-step" id="step2">
-      <h2>What is your height?</h2>
-      <label for="height">Height (inches):</label>
-      <input type="number" id="height" placeholder="Enter your height in inches" required>
+      <h2>What is your weight?</h2>
+      <label for="weight">Weight (lbs):</label>
+      <input type="number" id="weight" placeholder="Enter your weight in pounds" required>
       <div class="button-group">
         <button type="button" class="prev" onclick="prevStep(2)">Previous</button>
         <button type="button" onclick="nextStep(2)">Next</button>
       </div>
     </div>
     
-    <!-- Step 3: Age -->
+    <!-- Step 3: Height -->
     <div class="form-step" id="step3">
-      <h2>What is your age?</h2>
-      <label for="age">Age:</label>
-      <input type="number" id="age" placeholder="Enter your age" required>
+      <h2>What is your height?</h2>
+      <label for="height">Height (inches):</label>
+      <input type="number" id="height" placeholder="Enter your height in inches" required>
       <div class="button-group">
         <button type="button" class="prev" onclick="prevStep(3)">Previous</button>
         <button type="button" onclick="nextStep(3)">Next</button>
       </div>
     </div>
     
-    <!-- Step 4: Gender -->
+    <!-- Step 4: Age -->
     <div class="form-step" id="step4">
+      <h2>What is your age?</h2>
+      <label for="age">Age:</label>
+      <input type="number" id="age" placeholder="Enter your age" required>
+      <div class="button-group">
+        <button type="button" class="prev" onclick="prevStep(4)">Previous</button>
+        <button type="button" onclick="nextStep(4)">Next</button>
+      </div>
+    </div>
+    
+    <!-- Step 5: Gender -->
+    <div class="form-step" id="step5">
       <h2>What is your gender?</h2>
       <label for="gender">Gender:</label>
       <select id="gender">
@@ -194,13 +207,13 @@
         <option value="female">Female</option>
       </select>
       <div class="button-group">
-        <button type="button" class="prev" onclick="prevStep(4)">Previous</button>
-        <button type="button" onclick="nextStep(4)">Next</button>
+        <button type="button" class="prev" onclick="prevStep(5)">Previous</button>
+        <button type="button" onclick="nextStep(5)">Next</button>
       </div>
     </div>
     
-    <!-- Step 5: Activity Level -->
-    <div class="form-step" id="step5">
+    <!-- Step 6: Activity Level -->
+    <div class="form-step" id="step6">
       <h2>What is your activity level?</h2>
       <label for="activityLevel">Activity Level:</label>
       <select id="activityLevel">
@@ -210,7 +223,7 @@
         <option value="very_active">Very Active (hard exercise/sports)</option>
       </select>
       <div class="button-group">
-        <button type="button" class="prev" onclick="prevStep(5)">Previous</button>
+        <button type="button" class="prev" onclick="prevStep(6)">Previous</button>
         <button type="button" onclick="calculateMacros()">Calculate Macros</button>
       </div>
     </div>
@@ -219,12 +232,13 @@
     <div class="form-step" id="results-step">
       <div id="results">
         <h2>Your Macros</h2>
+        <p id="user-info"></p>
         <p id="calories"></p>
         <p id="protein"></p>
         <p id="carbs"></p>
         <p id="fats"></p>
         <div class="button-group">
-          <button type="button" class="prev" onclick="prevStep(6)">Back</button>
+          <button type="button" class="prev" onclick="prevStep(7)">Back</button>
           <button type="button" onclick="resetForm()">Start Over</button>
         </div>
       </div>
@@ -233,12 +247,12 @@
 </div>
 
 <footer>
-  &copy; 2025 Macro Calculator & Meal Planner
+  &copy; 2025 Nutrition Nana
 </footer>
 
 <script>
   let currentStep = 1;
-  const totalSteps = 5;
+  const totalSteps = 6;
   
   function updateProgressBar() {
     const progressPercent = ((currentStep - 1) / totalSteps) * 100;
@@ -261,13 +275,16 @@
   
   function nextStep(step) {
     // Validate current step
-    if (step === 1 && !document.getElementById('weight').value) {
+    if (step === 1 && (!document.getElementById('name').value || !document.getElementById('email').value)) {
+      alert('Please enter your name and email');
+      return;
+    } else if (step === 2 && !document.getElementById('weight').value) {
       alert('Please enter your weight');
       return;
-    } else if (step === 2 && !document.getElementById('height').value) {
+    } else if (step === 3 && !document.getElementById('height').value) {
       alert('Please enter your height');
       return;
-    } else if (step === 3 && !document.getElementById('age').value) {
+    } else if (step === 4 && !document.getElementById('age').value) {
       alert('Please enter your age');
       return;
     }
@@ -297,13 +314,15 @@
   
   function calculateMacros() {
     // Get form values
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
     const weight = parseFloat(document.getElementById('weight').value);
     const height = parseFloat(document.getElementById('height').value);
     const age = parseInt(document.getElementById('age').value);
     const gender = document.getElementById('gender').value;
     const activityLevel = document.getElementById('activityLevel').value;
 
-    if (!weight || !height || !age) {
+    if (!name || !email || !weight || !height || !age) {
       alert("Please fill out all fields.");
       return;
     }
@@ -333,6 +352,7 @@
     const fats = Math.round((tdee * 0.3) / 9);   // Fats in grams
 
     // Display results
+    document.getElementById('user-info').textContent = `Results for ${name} (${email})`;
     document.getElementById('calories').textContent = `Calories Needed Per Day: ${Math.round(tdee)} kcal`;
     document.getElementById('protein').textContent = `Protein Needed Per Day: ${protein} g`;
     document.getElementById('carbs').textContent = `Carbohydrates Needed Per Day: ${carbs} g`;
